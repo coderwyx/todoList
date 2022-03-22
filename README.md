@@ -1,2 +1,19 @@
-# todoList
-基于TypeScript+Vue3 实现的todoList 功能有增删改查，模糊查询，登录功能。
+# todolist
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
