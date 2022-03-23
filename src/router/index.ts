@@ -1,25 +1,46 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    redirect: '/todoList'
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+    path: '/',
+    name: 'layout',
+    component: () => import(/* webpackChunkName: "layout  " */ '../views/layout/Layout.vue'),
+    children: [
+      {
+        path: '/todoList',
+        name: 'todoList',
+        component: () => import(/* webpackChunkName: "todoList" */ '../views/todoList/TodoList.vue')
+      }
+    ]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import(/* webpackChunkName: "notFound" */ '../views/notFound/NotFound.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue')
+  },
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes
 })
+
+// 全局路由前置守卫
+router.beforeEach((to, from) => {
+  const token = window.localStorage.getItem('token')
+  if (to.name !== 'login' && !token) {
+    return '/login'
+  }
+})
+
 
 export default router
