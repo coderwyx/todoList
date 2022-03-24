@@ -63,8 +63,6 @@ export default defineComponent({
 
         watch(store.state.filterData, () => {
             store.commit(TODO_LIST_FILTER)
-            store.commit('b')
-            console.log("111")
         }, {
             immediate: true
         })
