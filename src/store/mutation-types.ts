@@ -1,0 +1,2 @@
+export const TODO_LIST_FILTER = 'TODO_LIST_FILTER'
+export const DELETE_TODO_ITEM = 'DELETE_TODO_ITEM'

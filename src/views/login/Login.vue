@@ -55,6 +55,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive, computed } from 'vue';
+import { message } from 'ant-design-vue';
 import { useRouter } from 'vue-router';
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 interface FormState {
@@ -78,7 +79,8 @@ export default defineComponent({
         const onFinish = (values: any) => {
             console.log('Success:', values);
             window.localStorage.setItem('token', 'admin');
-            router.push('/')
+            router.push('/');
+            message.success('Login success');
         };
 
         const onFinishFailed = (errorInfo: any) => {
