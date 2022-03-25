@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 // ant 按需引入
-import { Layout, Menu, Form, Input, Checkbox, Button, Card, Row, Col, Select, Table, Tag, Divider, Dropdown, Radio, Popconfirm } from 'ant-design-vue';
+import { Layout, Menu, Form, Input, Checkbox, Button, Card, Row, Col, Select, Table, Tag, Divider, Dropdown, Radio, Popconfirm, Modal } from 'ant-design-vue';
 // antd 样式引入
 import 'ant-design-vue/dist/antd.css'; // or 'ant-design-vue/dist/antd.less'
 
@@ -26,6 +26,7 @@ app.component('icon-svg', IconSvg)
     .use(Radio)
     .use(Divider)
     .use(Tag)
+    .use(Modal)
     .use(Popconfirm)
     .use(router)
     .mount('#app')

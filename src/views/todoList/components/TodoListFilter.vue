@@ -1,6 +1,6 @@
 <template>
     <div class="filter">
-        <a-form :model="filterData" layout="inline">
+        <a-form :model="store.state.filterData" layout="inline">
             <a-form-item :labelCol="{ span: 4 }" :wrapper-col="{ span: 19, offset: 1 }" label="关键字">
                 <a-input-search
                     v-model:value="store.state.filterData.keyword"
@@ -24,7 +24,7 @@
                 </a-select>
             </a-form-item>
         </a-form>
-        <a-button type="primary" size="mini">
+        <a-button @click="add" type="primary" size="mini">
             <template #icon>
                 <PlusOutlined />
             </template>
@@ -35,7 +35,7 @@
 
 <script lang='ts'>
 import { defineComponent, ref, reactive, watch } from 'vue'
-import {  TODO_LIST_FILTER } from '../../../store/mutation-types'
+import { TODO_LIST_FILTER } from '../../../store/mutation-types'
 import { useStore } from 'vuex';
 import { PlusOutlined } from '@ant-design/icons-vue';
 export default defineComponent({
@@ -46,19 +46,14 @@ export default defineComponent({
     components: {
         PlusOutlined
     },
-    setup() {
-        type filterType = {
-            keyword: string
-            state: '0' | '1' | 'all'
-        }
+    emits: ['add'],
+    setup(props, contents) {
 
         const store = useStore()
 
-        const filterData = reactive<filterType>({
-            keyword: '',
-            state: 'all'
-        })
-
+        const add = () => {
+            contents.emit('add')
+        }
 
 
         watch(store.state.filterData, () => {
@@ -71,8 +66,8 @@ export default defineComponent({
 
 
         return {
-            filterData,
             store,
+            add
         };
     },
 })

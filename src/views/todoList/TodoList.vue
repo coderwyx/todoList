@@ -1,5 +1,5 @@
 <template>
-    <todo-list-filter></todo-list-filter>
+    <todo-list-filter @add="add"></todo-list-filter>
     <a-table :columns="columns" :data-source="store.state.filterTodoList" rowKey="id" bordered>
         <template #state="{ text: state }">
             <span>
@@ -8,7 +8,7 @@
         </template>
         <template #action="{ record }">
             <span>
-                <a>编辑</a>
+                <a @click="edit(record.id)">编辑</a>
                 <a-divider type="vertical" />
                 <!-- <a>状态</a> -->
                 <a-dropdown :trigger="['click']">
@@ -31,7 +31,7 @@
                 <a-divider type="vertical" />
 
                 <a-popconfirm
-                    title="确定删除这条Todo吗？"
+                    title="确定要删除这条Todo吗？"
                     ok-text="是"
                     cancel-text="否"
                     @confirm="confirm(record.id)"
@@ -41,21 +41,23 @@
             </span>
         </template>
     </a-table>
+    <todo-list-info v-model:visible="visible" :mode="mode" v-model:id="id"></todo-list-info>
 </template>
 
 <script lang='ts'>
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { DELETE_TODO_ITEM, TODO_LIST_FILTER } from '../../store/mutation-types'
 import { message } from 'ant-design-vue';
 import { useStore } from 'vuex'
 import TodoListFilter from './components/TodoListFilter.vue'
+import TodoListInfo from './components/TodoListInfo.vue'
 
 const columns = [
     {
         dataIndex: 'title',
         key: 'title',
         title: '标题',
-        width: '800px'
+        width: '60%'
     },
     {
         dataIndex: 'state',
@@ -80,30 +82,53 @@ export default defineComponent({
 
     },
     components: {
-        TodoListFilter
+        TodoListFilter,
+        TodoListInfo
     },
 
     setup() {
         const store = useStore()
-
+        let visible = ref<boolean>(false)
+        let mode = ref<'add' | 'edit'>('add')
+        let id = ref<number | string>('')
         const radioStyle = reactive({
             display: 'block',
             height: '30px',
             lineHeight: '30px',
         });
+        const edit = (infoId: number | string) => {
+            console.log("编辑")
+            mode.value = 'edit'
+            id.value = infoId
+            visible.value = true
+        }
         const confirm = (id: number) => {
             store.commit(DELETE_TODO_ITEM, id)
+            store.commit(TODO_LIST_FILTER, id)
             message.success('删除成功')
 
         }
+
+        const add = () => {
+            console.log("添加")
+            mode.value = 'add'
+            visible.value = true
+        }
+
         const stateChange = () => {
+            store.commit(TODO_LIST_FILTER)
             message.success('修改状态成功')
         }
 
         return {
             store,
             columns,
+            visible,
             radioStyle,
+            mode,
+            id,
+            edit,
+            add,
             confirm,
             stateChange
         }
