@@ -1,14 +1,14 @@
 <template>
-    <a-layout class="ant-layout" style="height: 100vh;">
+    <a-layout class="ant-layout" :style="{ minHeight: '100vh' }">
         <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
             <div class="logo">
                 <icon-svg class="logoSvg" icon-class="Vue" />
-                    <span v-show="!collapsed">MyTodoList</span>
+                <span v-show="!collapsed">MyTodoList</span>
 
                 <!-- TODO: Logo动画 -->
                 <!-- <transition mode="out-in" name="name">
                     <span v-show="!collapsed">MyTodoList</span>
-                </transition> -->
+                </transition>-->
             </div>
             <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
                 <a-menu-item key="1">
@@ -29,7 +29,7 @@
             <a-layout-content
                 :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px', }"
             >
-            <router-view></router-view>
+                <router-view></router-view>
             </a-layout-content>
         </a-layout>
     </a-layout>
