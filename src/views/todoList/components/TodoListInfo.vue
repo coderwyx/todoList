@@ -6,11 +6,17 @@
         @ok="handleOk"
         @cancel="handleCancel"
     >
-        <a-form :model="store.state.todoInfo" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="标题">
+        <a-form
+            :rules="rules"
+            ref="formRef"
+            :model="store.state.todoInfo"
+            :label-col="labelCol"
+            :wrapper-col="wrapperCol"
+        >
+            <a-form-item label="标题" name="title">
                 <a-input v-model:value="store.state.todoInfo.title" />
             </a-form-item>
-            <a-form-item label="状态">
+            <a-form-item label="状态" name="state">
                 <a-select ref="select" v-model:value="store.state.todoInfo.state">
                     <a-select-option value="1">已完成</a-select-option>
                     <a-select-option value="0">未完成</a-select-option>
@@ -59,33 +65,50 @@ export default defineComponent({
         const wrapperCol = reactive({
             span: 18
         })
+        const formRef = ref()
 
         watch(() => props.id, (newValue, oldValue) => {
             if (newValue !== '') {
                 store.commit(GET_TODO_INFO, props.id)
             }
         })
-
-        const handleOk = () => {
-            let mode = ''
-            switch (props.mode) {
-                case 'add': store.commit(ADD_TODO_ITEM); mode = '添加'; break;
-                case 'edit': store.commit(EDIT_TODO_ITEM, props.id); mode = '编辑'; break;
-            }
-
-            message.success(`${mode}成功`)
-            contents.emit('update:visible', false)
-            contents.emit('update:id', '')
-            store.commit(TODO_LIST_FILTER)
-            store.commit(CLEAR_TODO_INFO)
+        const rules = {
+            title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+            state: [{ required: true, message: '请选择状态', trigger: 'blur' }]
         }
+        const handleOk = () => {
+            formRef.value
+                .validate().then(() => {
+                    console.log('表单验证通过');
+                    let mode = ''
+                    switch (props.mode) {
+                        case 'add': store.commit(ADD_TODO_ITEM); mode = '添加'; break;
+                        case 'edit': store.commit(EDIT_TODO_ITEM, props.id); mode = '编辑'; break;
+                    }
+
+                    message.success(`${mode}成功`)
+                    contents.emit('update:visible', false)
+                    contents.emit('update:id', '')
+                    store.commit(TODO_LIST_FILTER)
+                    store.commit(CLEAR_TODO_INFO)
+                }).catch(() => {
+                    console.log('表单验证失败')
+                })
+
+        }
+        const resetForm = () => {
+            formRef.value.clearValidate();
+        };
         const handleCancel = () => {
             store.commit(CLEAR_TODO_INFO)
+            resetForm()
             contents.emit('update:visible', false)
             contents.emit('update:id', '')
         }
 
         return {
+            formRef,
+            rules,
             store,
             labelCol,
             wrapperCol,
