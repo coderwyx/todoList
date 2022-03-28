@@ -1,5 +1,5 @@
 <template>
-    <a-layout class="ant-layout">
+    <a-layout class="ant-layout" style="height: 100vh;">
         <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
             <div class="logo">
                 <icon-svg class="logoSvg" icon-class="Vue" />
