@@ -50,7 +50,7 @@ export default createStore<state>({
     // Todo详情
     todoInfo: {
       title: '',
-      state: '1',
+      state: '',
       id: 0
     }
   },
@@ -79,7 +79,7 @@ export default createStore<state>({
     [CLEAR_TODO_INFO](state) {
       state.todoInfo = {
         title: '',
-        state: '1',
+        state: '',
         id: 0
       }
     },

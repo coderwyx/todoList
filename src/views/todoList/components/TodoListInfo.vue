@@ -74,7 +74,7 @@ export default defineComponent({
         })
         const rules = {
             title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
-            state: [{ required: true, message: '请选择状态', trigger: 'blur' }]
+            state: [{ required: true, message: '请选择状态', trigger: 'change' }]
         }
         const handleOk = () => {
             formRef.value
@@ -85,7 +85,6 @@ export default defineComponent({
                         case 'add': store.commit(ADD_TODO_ITEM); mode = '添加'; break;
                         case 'edit': store.commit(EDIT_TODO_ITEM, props.id); mode = '编辑'; break;
                     }
-
                     message.success(`${mode}成功`)
                     contents.emit('update:visible', false)
                     contents.emit('update:id', '')
@@ -97,7 +96,7 @@ export default defineComponent({
 
         }
         const resetForm = () => {
-            formRef.value.clearValidate();
+            formRef.value.resetFields();
         };
         const handleCancel = () => {
             store.commit(CLEAR_TODO_INFO)
