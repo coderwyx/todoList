@@ -1,20 +1,9 @@
 <template>
     <div class="login">
         <h3 class="title">Welcome to</h3>
-        <a-form
-            :model="formState"
-            name="normal_login"
-            class="login-form"
-            @finish="onFinish"
-            @finishFailed="onFinishFailed"
-        >
-            <a-form-item
-                label="Username"
-                name="username"
-                :labelCol="{ span: 8 }"
-                labelAlign="left"
-                :rules="[{ required: true, message: 'Please input your username!' }]"
-            >
+        <a-form :model="formState" name="normal_login" class="login-form" @finishFailed="onFinishFailed">
+            <a-form-item label="Username" name="username" :labelCol="{ span: 8 }" labelAlign="left"
+                :rules="[{ required: true, message: 'Please input your username!' }]">
                 <a-input v-model:value="formState.username">
                     <template #prefix>
                         <UserOutlined class="site-form-item-icon" />
@@ -22,13 +11,8 @@
                 </a-input>
             </a-form-item>
 
-            <a-form-item
-                label="Password"
-                name="password"
-                labelAlign="left"
-                :labelCol="{ span: 8 }"
-                :rules="[{ required: true, message: 'Please input your password!' }]"
-            >
+            <a-form-item label="Password" name="password" labelAlign="left" :labelCol="{ span: 8 }"
+                :rules="[{ required: true, message: 'Please input your password!' }]">
                 <a-input-password v-model:value="formState.password">
                     <template #prefix>
                         <LockOutlined class="site-form-item-icon" />
@@ -43,12 +27,8 @@
             </div>
 
             <a-form-item>
-                <a-button
-                    :disabled="disabled"
-                    type="primary"
-                    html-type="submit"
-                    class="login-form-button"
-                >Log in</a-button>
+                <a-button :disabled="disabled" type="primary" @click="onFinish" class="login-form-button">Log in
+                </a-button>
             </a-form-item>
         </a-form>
     </div>
@@ -56,8 +36,10 @@
 <script lang="ts">
 import { defineComponent, reactive, computed } from 'vue';
 import { message } from 'ant-design-vue';
+import { login } from '../../api/login'
 import { useRouter } from 'vue-router';
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
+import { any, string } from 'vue-types';
 interface FormState {
     username: string;
     password: string;
@@ -76,11 +58,25 @@ export default defineComponent({
             remember: true,
         });
         const router = useRouter()
-        const onFinish = (values: any) => {
-            console.log('Success:', values);
-            window.localStorage.setItem('token', 'admin');
-            router.push('/');
-            message.success('Login success');
+
+        const onFinish = async (values: any) => {
+            const params = {
+                username: formState.username,
+                password: formState.password
+            }
+            const res = await login(params)
+            console.log(res.data);
+            if (res.data.error !== 0) {
+                message.error(res.data.message)
+            } else {
+                window.localStorage.setItem('token', 'admin');
+                router.push('/');
+                message.success('Login success');
+            }
+            // console.log('Success:', values);
+            // window.localStorage.setItem('token', 'admin');
+            // router.push('/');
+            // message.success('Login success');
         };
 
         const onFinishFailed = (errorInfo: any) => {
@@ -107,21 +103,26 @@ export default defineComponent({
     box-shadow: 0 0 25px #909399;
     padding: 30px 60px;
 }
+
 .title {
     text-align: center;
     padding: 15px;
 }
+
 .login-form {
     max-width: 300px;
 }
+
 .login-form-wrap {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 .login-form-forgot {
     margin-bottom: 24px;
 }
+
 .login-form-button {
     width: 100%;
 }

@@ -1,18 +1,8 @@
 <template>
-    <a-modal
-        :visible="$props.visible"
-        :title="$props.mode === 'add' ? '添加' : '编辑'"
-        width="30%"
-        @ok="handleOk"
-        @cancel="handleCancel"
-    >
-        <a-form
-            :rules="rules"
-            ref="formRef"
-            :model="store.state.todoInfo"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-        >
+    <a-modal :visible="$props.visible" :title="$props.mode === 'add' ? '添加' : '编辑'" width="30%" @ok="handleOk"
+        @cancel="handleCancel">
+        <a-form :rules="rules" ref="formRef" :model="store.state.todoInfo" :label-col="labelCol"
+            :wrapper-col="wrapperCol">
             <a-form-item label="标题" name="title">
                 <a-input v-model:value="store.state.todoInfo.title" />
             </a-form-item>
@@ -37,6 +27,7 @@ import {
 } from '../../../store/mutation-types'
 import { useStore } from 'vuex'
 import { message } from 'ant-design-vue';
+import { addTodo, editTodo } from '@/api/todo';
 export default defineComponent({
     name: 'TodoListInfo',
     props: {
@@ -49,14 +40,14 @@ export default defineComponent({
             default: 'add'
         },
         id: {
-            type: [Number, String],
+            type: String,
             default: ''
         }
     },
     components: {
 
     },
-    emits: ['update:visible', 'update:id'],
+    emits: ['update:visible', 'update:id', 'refreshTodoList'],
     setup(props, contents) {
         const store = useStore()
         const labelCol = reactive({
@@ -69,6 +60,8 @@ export default defineComponent({
 
         watch(() => props.id, (newValue, oldValue) => {
             if (newValue !== '') {
+                console.log(props.id);
+
                 store.commit(GET_TODO_INFO, props.id)
             }
         })
@@ -76,18 +69,29 @@ export default defineComponent({
             title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
             state: [{ required: true, message: '请选择状态', trigger: 'change' }]
         }
-        const handleOk = () => {
+        const handleOk = async () => {
             formRef.value
-                .validate().then(() => {
+                .validate().then(async () => {
                     console.log('表单验证通过');
                     let mode = ''
                     switch (props.mode) {
-                        case 'add': store.commit(ADD_TODO_ITEM); mode = '添加'; break;
-                        case 'edit': store.commit(EDIT_TODO_ITEM, props.id); mode = '编辑'; break;
+                        // case 'add': store.commit(ADD_TODO_ITEM); mode = '添加'; break;
+                        case 'add': const addRes = await addTodo(store.state.todoInfo)
+                            if (addRes.data.error === 0) {
+                                message.success(addRes.data.message)
+                                contents.emit('update:visible', false)
+                            }
+                            ; break;
+                        // case 'edit': store.commit(EDIT_TODO_ITEM, props.id); mode = '编辑'; break;
+                        case 'edit': const editRes = await editTodo(props.id, store.state.todoInfo);
+                            if (editRes.data.error === 0) {
+                                message.success(editRes.data.message)
+                                contents.emit('update:visible', false)
+                            }
+                            break;
                     }
-                    message.success(`${mode}成功`)
-                    contents.emit('update:visible', false)
                     contents.emit('update:id', '')
+                    contents.emit('refreshTodoList')
                     store.commit(TODO_LIST_FILTER)
                     store.commit(CLEAR_TODO_INFO)
                 }).catch(() => {

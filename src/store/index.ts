@@ -6,13 +6,14 @@ import {
   CLEAR_TODO_INFO,
   ADD_TODO_ITEM,
   GET_TODO_INFO,
-  EDIT_TODO_ITEM
+  EDIT_TODO_ITEM,
+  SET_TODO_LIST
 } from './mutation-types'
 
 type todoListType = {
   title: string,
   state: string,
-  id: number | string
+  _id?: number | string
 }
 
 type filterType = {
@@ -33,15 +34,7 @@ export default createStore<state>({
     // 筛选后的Todo列表
     filterTodoList: [],
     // Todo列表
-    todoList: [{
-      title: '好好学习，天天向上',
-      state: '1',
-      id: 1
-    }, {
-      title: '道阻且长，行则将至',
-      state: '0',
-      id: 2
-    }],
+    todoList: [],
     // 筛选条件
     filterData: {
       keyword: '',
@@ -51,12 +44,20 @@ export default createStore<state>({
     todoInfo: {
       title: '',
       state: '',
-      id: 0
     }
   },
   getters: {
+
   },
   mutations: {
+
+    // 更改TodoList
+    [SET_TODO_LIST](state, todoList: todoListType[]) {
+      console.log('todoList', todoList);
+      console.log('state.todoList', state.todoList);
+
+      state.todoList = todoList
+    },
     // 根据条件筛选TodoList
     [TODO_LIST_FILTER](state) {
       const newTodoList = state.todoList.filter(item => {
@@ -71,7 +72,7 @@ export default createStore<state>({
     // 删除Todo
     [DELETE_TODO_ITEM](state, id) {
       const index = state.todoList.findIndex(item => {
-        return item.id === id
+        return item._id === id
       })
       state.todoList.splice(index, 1)
     },
@@ -80,19 +81,19 @@ export default createStore<state>({
       state.todoInfo = {
         title: '',
         state: '',
-        id: 0
+        _id: 0
       }
     },
     // 添加Todo
     [ADD_TODO_ITEM](state) {
-      
-      state.todoInfo.id = Date.now()
+
+      state.todoInfo._id = Date.now()
       state.todoList.push(state.todoInfo)
     },
     // 编辑Todo
     [EDIT_TODO_ITEM](state, id) {
       let index = state.todoList.findIndex(item => {
-        return item.id === id
+        return item._id === id
       })
       state.todoList.splice(index, 1, state.todoInfo)
 
@@ -101,7 +102,7 @@ export default createStore<state>({
     [GET_TODO_INFO](state, id: number | string) {
 
       state.todoInfo = Object.assign({}, state.todoList.find(item => {
-        return item.id === id
+        return item._id === id
       }))
     }
   },
