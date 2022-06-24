@@ -67,7 +67,7 @@ export default defineComponent({
             const res = await login(params)
             console.log(res.data);
             if (res.data.error !== 0) {
-                message.error(res.data.message)
+                message.error(res.data.msg)
             } else {
                 window.localStorage.setItem('token', 'admin');
                 router.push('/');

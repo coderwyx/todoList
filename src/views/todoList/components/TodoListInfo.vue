@@ -78,14 +78,14 @@ export default defineComponent({
                         // case 'add': store.commit(ADD_TODO_ITEM); mode = '添加'; break;
                         case 'add': const addRes = await addTodo(store.state.todoInfo)
                             if (addRes.data.error === 0) {
-                                message.success(addRes.data.message)
+                                message.success('添加成功')
                                 contents.emit('update:visible', false)
                             }
                             ; break;
                         // case 'edit': store.commit(EDIT_TODO_ITEM, props.id); mode = '编辑'; break;
                         case 'edit': const editRes = await editTodo(props.id, store.state.todoInfo);
                             if (editRes.data.error === 0) {
-                                message.success(editRes.data.message)
+                                message.success('编辑成功')
                                 contents.emit('update:visible', false)
                             }
                             break;

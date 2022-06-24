@@ -1,6 +1,6 @@
 <template>
     <todo-list-filter @add="add"></todo-list-filter>
-    <a-table :columns="columns" :data-source="store.state.filterTodoList" rowKey="_id" bordered>
+    <a-table :columns="columns" :data-source="store.state.filterTodoList" rowKey="id" bordered>
         <template #state="{ text: state }">
             <span>
                 <a-tag :color="state === '0' ? 'red' : 'green'">{{ state === '0' ? '未完成' : '已完成' }}</a-tag>
@@ -8,7 +8,7 @@
         </template>
         <template #action="{ record }">
             <span>
-                <a @click="edit(record._id)">编辑</a>
+                <a @click="edit(record.id)">编辑</a>
                 <a-divider type="vertical" />
                 <!-- <a>状态</a> -->
                 <a-dropdown :trigger="['click']">
@@ -30,7 +30,7 @@
                 </a-dropdown>
                 <a-divider type="vertical" />
 
-                <a-popconfirm title="确定要删除这条Todo吗？" ok-text="是" cancel-text="否" @confirm="deleteItem(record._id)">
+                <a-popconfirm title="确定要删除这条Todo吗？" ok-text="是" cancel-text="否" @confirm="deleteItem(record.id)">
                     <a>删除</a>
                 </a-popconfirm>
             </span>
@@ -51,7 +51,7 @@ import { deleteTodo, editTodo, getTodoList } from '../../api/todo'
 interface todoListType {
     title: string,
     state: '0' | '1',
-    _id: string
+    id: string
 }
 const columns = [
     {
@@ -140,9 +140,9 @@ export default defineComponent({
             const todoInfo = {
                 title: item.title,
                 state: item.state,
-                _id: item._id
+                id: item.id
             }
-            const res = await editTodo(item._id, todoInfo)
+            const res = await editTodo(item.id, todoInfo)
             if (res.data.error === 0) {
                 store.commit(TODO_LIST_FILTER)
                 message.success('修改状态成功')

@@ -5,13 +5,13 @@ import axios, { AxiosRequestConfig } from "axios";
 interface IResponseType<T> {
     error: number,
     data: T,
-    message: string
+    msg: string
 }
 
 export function request<T>(config: AxiosRequestConfig) {
     // 创建axios实例
     const instance = axios.create({
-        baseURL: 'http://localhost:3000',
+        baseURL: 'https://nyew1h911i.execute-api.us-west-2.amazonaws.com',
         timeout: 3 * 1000,
 
     })

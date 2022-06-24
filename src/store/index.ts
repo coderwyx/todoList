@@ -13,7 +13,7 @@ import {
 type todoListType = {
   title: string,
   state: string,
-  _id?: number | string
+  id: number | string
 }
 
 type filterType = {
@@ -44,6 +44,7 @@ export default createStore<state>({
     todoInfo: {
       title: '',
       state: '',
+      id: ''
     }
   },
   getters: {
@@ -72,7 +73,7 @@ export default createStore<state>({
     // 删除Todo
     [DELETE_TODO_ITEM](state, id) {
       const index = state.todoList.findIndex(item => {
-        return item._id === id
+        return item.id === id
       })
       state.todoList.splice(index, 1)
     },
@@ -81,19 +82,19 @@ export default createStore<state>({
       state.todoInfo = {
         title: '',
         state: '',
-        _id: 0
+        id:''
       }
     },
     // 添加Todo
     [ADD_TODO_ITEM](state) {
 
-      state.todoInfo._id = Date.now()
+      state.todoInfo.id = Date.now()
       state.todoList.push(state.todoInfo)
     },
     // 编辑Todo
     [EDIT_TODO_ITEM](state, id) {
       let index = state.todoList.findIndex(item => {
-        return item._id === id
+        return item.id === id
       })
       state.todoList.splice(index, 1, state.todoInfo)
 
@@ -102,7 +103,7 @@ export default createStore<state>({
     [GET_TODO_INFO](state, id: number | string) {
 
       state.todoInfo = Object.assign({}, state.todoList.find(item => {
-        return item._id === id
+        return item.id === id
       }))
     }
   },

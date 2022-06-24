@@ -4,7 +4,7 @@ import { request } from "@/utils/request";
 interface ITodoInfoType {
     title: string,
     state: '0' | '1',
-    _id: string
+    id: string
 }
 
 // 获取Todo列表
@@ -24,9 +24,12 @@ export function addTodo(todoInfo: ITodoInfoType) {
 }
 
 // 删除todo
-export function deleteTodo(todoId: string) {
+export function deleteTodo(id: string) {
     return request({
-        url: `/todo/delete/${todoId}`,
+        url: `/todo/delete`,
+        data:{
+            id
+        },
         method: 'DELETE',
     })
 }
@@ -34,8 +37,9 @@ export function deleteTodo(todoId: string) {
 
 // 编辑todo
 export function editTodo(todoId: string, todoInfo: ITodoInfoType) {
+    todoInfo.id = todoId
     return request({
-        url: `/todo/edit/${todoId}`,
+        url: `/todo/edit`,
         method: 'PUT',
         data: todoInfo
     })
